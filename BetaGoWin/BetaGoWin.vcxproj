@@ -147,6 +147,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BetaGoWin.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="go.cpp" />
+    <ClCompile Include="intersection.cpp" />
+    <ClCompile Include="player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Headers\game.h" />
+    <ClInclude Include="..\Headers\go.h" />
+    <ClInclude Include="..\Headers\intersection.h" />
+    <ClInclude Include="..\Headers\player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
