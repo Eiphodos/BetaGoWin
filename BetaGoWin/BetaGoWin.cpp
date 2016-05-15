@@ -10,6 +10,9 @@
 #include "../Headers/player.h"
 #include "../Headers/intersection.h"
 #include "../Headers/game.h"
+#include <memory>
+
+using namespace std;
 
 // Handler for the main window and the buttons
 HWND hwnd01, w_newgame, w_currentplayer, w_pass;
@@ -30,6 +33,8 @@ HBITMAP hImg_current = hImg_black; // Set the initial value to black since he is
 int windowWidth = 585;
 int windowHeight = 630;
 int buttonSize = 30;
+
+unique_ptr<Game> newgame = make_unique<Game>();
 
 // Function declarations
 
@@ -76,12 +81,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 	{
 		// When our main window is created, we create a new game object and save a pointer to that on the heap
-		Game* newgame = nullptr;
-		newgame = new Game();
-		if (newgame) 
-			SetWindowLongPtr(hwnd, GWL_USERDATA, (long)newgame);
-		else                                  
-			return -1;
 		//When the main window is created, all buttons are created as children.
 		int x_buttonPlacement = 0;
 		int y_buttonPlacement = 0;
@@ -116,8 +115,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_COMMAND:
 	{
 		// Here we retrieve the pointer to our game object so we can use it.
-		Game* newgame = nullptr;
-		newgame = (Game*)GetWindowLongPtr(hwnd, GWL_USERDATA);
 		int pressedButton = LOWORD(wParam);
 		if (pressedButton == 361) {
 			switchButtonBackground(newgame->currentPlayer->color);
@@ -127,15 +124,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 		if (pressedButton == 362) {
-			for (int i = 0; i < 361; i++)
-				delete newgame->board.tiles[i];
-			newgame->board.tiles.clear();
-			newgame->states.clear();
-			Game* temp = new Game();
-			if (temp)
-				SetWindowLongPtr(hwnd, GWL_USERDATA, (long)temp);
-			else
-				return -1;
+			newgame = make_unique<Game>();
 			for (int i = 0; i < 361; i++) {
 				SendMessageW(w_buttons[i], BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hImg_tile);
 			}
@@ -164,8 +153,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	case WM_PAINT:
 	{
-		Game* newgame = nullptr;
-		newgame = (Game*)GetWindowLongPtr(hwnd, GWL_USERDATA);
 		if (newgame->currentPlayer->color == Black){
 			hdc01 = BeginPaint(hwnd, &ps);
 			SetBkColor(hdc01, color_white);
