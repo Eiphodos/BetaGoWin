@@ -3,19 +3,18 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-enum Color { Black, White };
+enum Color { Black, White, Neutral };
 
 class Player
 {
 private:
-	Color color;
 	int handicap;
 	int capturedStones;
 	double score;
 	double komi;
 public:
+	Color color;
 	double getScore();
-	Color getColor();
 	Player(Color c, int h, double k);
 	Player();
 };

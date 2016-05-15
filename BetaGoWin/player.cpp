@@ -23,8 +23,3 @@ double Player::getScore()
 {
 	return score;
 }
-
-Color Player::getColor()
-{
-	return color;
-}

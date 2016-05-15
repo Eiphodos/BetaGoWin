@@ -7,14 +7,12 @@
 #include "intersection.h"
 #include "player.h"
 
-
 class Go
 {
-private:
-	std::vector<Intersection*> tiles;
 public:
-	void placeStone(int x, int y, Player* p);
-	Intersection* getIntersection(int n);
+	std::vector<Intersection*> tiles;
+	void placeStone(int n, Player* p);
+	Go(Player* p);
 	Go();
 };
 

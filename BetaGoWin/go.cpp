@@ -2,8 +2,9 @@
 
 #include "../Headers/intersection.h"
 #include "../Headers/go.h"
+#include "../Headers/player.h"
 
-Go::Go()
+Go::Go(Player* p)
 {
 	Intersection* temp;
 	for (int i = 0; i < 361; i++)
@@ -14,24 +15,22 @@ Go::Go()
 	for (int n = 0; n < 361; n++)
 	{
 		temp = tiles[n];
+		temp->owner = p;
 		if (n > 18)
-			temp->setIntersectionNorth(tiles[n - 19]);
+			temp->intersectionNorth = tiles[n - 19];
 		if ( n < 342)
-			temp->setIntersectionSouth(tiles[n + 19]);
+			temp->intersectionSouth = tiles[n + 19];
 		if (n % 19)
-			temp->setIntersectionWest(tiles[n - 1]);
+			temp->intersectionWest = tiles[n - 1];
 		if ((n +1) % 19)
-			temp->setIntersectionEast(tiles[n + 1]);
+			temp->intersectionEast = tiles[n + 1];
 	}
 }
 
-void Go::placeStone(int x, int y, Player* p)
-{
-	(*tiles[x + y * 19]).setStone();
-	(*tiles[x + y * 19]).setOwner(p);
-}
+Go::Go(){}
 
-Intersection* Go::getIntersection(int n)
+void Go::placeStone(int n, Player* p)
 {
-	return tiles[n];
+	tiles[n]->hasStone = true;
+	tiles[n]->owner = p;
 }

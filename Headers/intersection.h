@@ -4,26 +4,26 @@
 #define INTERSECTION_H
 
 #include "player.h"
+#include <vector>
+
+using namespace std;
 
 class Intersection
 {
-private:
+public:
 	Player* owner;
 	Intersection* intersectionNorth;
 	Intersection* intersectionSouth;
 	Intersection* intersectionWest;
 	Intersection* intersectionEast;
-public:
-	bool inAtari();
 	bool hasStone;
-//	bool isLibertyTo(Intersection* t1, Intersection* t2);
-	void setStone();
-	void setOwner(Player* p);
-	void setIntersectionNorth(Intersection* t);
-	void setIntersectionSouth(Intersection* t);
-	void setIntersectionWest(Intersection* t);
-	void setIntersectionEast(Intersection* t);
-	Player* getOwner();
+	bool isChecked;
+	bool hasLiberty();
+	bool hasFriendlyStone(Player* p);
+	bool hasEnemyStone(Player* p);
+	void captureIntersection(Player* noPlayer);
+	vector<Intersection*> captureTest(Player* p, Player* noPlayer);
+	vector<Intersection*> capturedConnections();
 	Intersection();
 };
 
