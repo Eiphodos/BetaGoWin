@@ -18,8 +18,3 @@ Player::Player(Color c, int h, double k)
 	score = 0 + komi;
 	capturedStones = 0;
 }
-
-double Player::getScore()
-{
-	return score;
-}

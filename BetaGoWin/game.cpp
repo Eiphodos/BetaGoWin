@@ -88,6 +88,7 @@ bool Game::compareState(vector<Color> s1, vector<Color> s2) {
 
 void Game::placeStone(int n)
 {
+	currentPlayer->passed = false;
 	board.placeStone(n, currentPlayer);
 }
 
@@ -107,6 +108,15 @@ void Game::saveState()
 		currentState.push_back(board.tiles[n]->owner->color);
 	}
 	states.push_back(currentState);
+}
+
+void Game::passTurn() {
+	currentPlayer->passed = true;
+	nextTurn();
+}
+
+void Game::newGame() {
+
 }
 
 vector<int> Game::getIndexes(vector<Intersection*> v) {

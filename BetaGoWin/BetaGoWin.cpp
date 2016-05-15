@@ -12,7 +12,7 @@
 #include "../Headers/game.h"
 
 // Handler for the main window and the buttons
-HWND hwnd01, w_newgame, w_currentplayer, w_score;
+HWND hwnd01, w_newgame, w_currentplayer, w_pass;
 HWND w_buttons[361];
 
 // Background color for the main window
@@ -34,6 +34,8 @@ int buttonSize = 30;
 // Function declarations
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+void switchButtonBackground(Color c);
+void newGame();
 
 
 
@@ -98,6 +100,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			// Sets the background image for the button being created.
 			SendMessageW(w_buttons[i], BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hImg_tile);
 		}
+		w_pass = CreateWindow(TEXT("button"), TEXT("Pass"),
+			WS_VISIBLE | WS_CHILD,
+			200, 570,
+			40, 30,
+			hwnd, (HMENU)361, NULL, NULL);
+		w_newgame = CreateWindow(TEXT("button"), TEXT("New"),
+			WS_VISIBLE | WS_CHILD,
+			400, 570,
+			40, 30,
+			hwnd, (HMENU)362, NULL, NULL);
 		return 0;
 	}
 
@@ -107,13 +119,35 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		Game* newgame = nullptr;
 		newgame = (Game*)GetWindowLongPtr(hwnd, GWL_USERDATA);
 		int pressedButton = LOWORD(wParam);
+		if (pressedButton == 361) {
+			switchButtonBackground(newgame->currentPlayer->color);
+			newgame->passTurn();
+			InvalidateRect(hwnd, &rc, FALSE);
+			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
+			return 0;
+		}
+		if (pressedButton == 362) {
+			for (int i = 0; i < 361; i++)
+				delete newgame->board.tiles[i];
+			newgame->board.tiles.clear();
+			newgame->states.clear();
+			Game* temp = new Game();
+			if (temp)
+				SetWindowLongPtr(hwnd, GWL_USERDATA, (long)temp);
+			else
+				return -1;
+			for (int i = 0; i < 361; i++) {
+				SendMessageW(w_buttons[i], BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hImg_tile);
+			}
+			hImg_current = hImg_black;
+			InvalidateRect(hwnd, &rc, FALSE);
+			RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE);
+			return 0;
+		}
 		if (!(newgame->illegalPlacement(pressedButton))){
 			// If a button is clicked, we change the background image.
 			SendMessageW(w_buttons[pressedButton], BM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hImg_current);
-			if (newgame->currentPlayer->color == Black)
-				hImg_current = hImg_white;
-			else
-				hImg_current = hImg_black;
+			switchButtonBackground(newgame->currentPlayer->color);
 			newgame->captureIntersections(pressedButton);
 			vector<int> *captured = &newgame->index_capturedThisTurn;
 			for (int i = 0; i < captured->size(); i++){
@@ -155,3 +189,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
+
+void switchButtonBackground(Color c) {
+	if (c == Black)
+		hImg_current = hImg_white;
+	else if (c == White)
+		hImg_current = hImg_black;
+}
+
+void newGame() {}

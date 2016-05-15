@@ -10,11 +10,11 @@ class Player
 private:
 	int handicap;
 	int capturedStones;
-	double score;
 	double komi;
 public:
 	Color color;
-	double getScore();
+	double score;
+	bool passed;
 	Player(Color c, int h, double k);
 	Player();
 };
