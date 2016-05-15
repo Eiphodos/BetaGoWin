@@ -119,10 +119,6 @@ void Game::passTurn() {
 	nextTurn();
 }
 
-void Game::newGame() {
-
-}
-
 vector<int> Game::getIndexes(vector<shared_ptr<Intersection>> v) {
 	vector<int> indexes;
 	int s;
