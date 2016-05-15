@@ -8,10 +8,10 @@ using namespace std;
 Intersection::Intersection()
 {
 	hasStone = false;
-	Intersection* intersectionNorth = nullptr;
-	Intersection* intersectionSouth = nullptr;
-	Intersection* intersectionWest = nullptr;
-	Intersection* intersectionEast = nullptr;
+	shared_ptr<Intersection> intersectionNorth = nullptr;
+	shared_ptr<Intersection> intersectionSouth = nullptr;
+	shared_ptr<Intersection> intersectionWest = nullptr;
+	shared_ptr<Intersection> intersectionEast = nullptr;
 }
 
 bool Intersection::hasLiberty()
@@ -80,12 +80,12 @@ void Intersection::captureIntersection(Player* noPlayer)
 	hasStone = false;
 }
 
-vector<Intersection*> Intersection::capturedConnections()
+vector<shared_ptr<Intersection>> Intersection::capturedConnections()
 {
-	vector<Intersection*> connectedCaptures;
-	vector<Intersection*> temp;
+	vector<shared_ptr<Intersection>> connectedCaptures;
+	vector<shared_ptr<Intersection>> temp;
 	isChecked = true;
-	connectedCaptures.push_back(this);
+	connectedCaptures.push_back(intersectionSelf);
 	if (intersectionNorth) {
 		if (intersectionNorth->hasFriendlyStone(owner) && !(intersectionNorth->isChecked)) {
 			temp = intersectionNorth->capturedConnections();
@@ -113,9 +113,9 @@ vector<Intersection*> Intersection::capturedConnections()
 	return connectedCaptures;
 }
 
-vector<Intersection*> Intersection::captureTest(Player* p, Player* noPlayer) {
-	vector<Intersection*> willBeCaptured;
-	vector<Intersection*> temp;
+vector<shared_ptr<Intersection>> Intersection::captureTest(Player* p, Player* noPlayer) {
+	vector<shared_ptr<Intersection>> willBeCaptured;
+	vector<shared_ptr<Intersection>> temp;
 	owner = p;
 	hasStone = true;
 	if (intersectionNorth) {

@@ -15,8 +15,12 @@ Game::Game()
 	currentPlayer = &player1;
 	opponent = &player2;
 	noPlayer = &player3;
-	board = Go(noPlayer);
+	board = new Go(noPlayer);
 	saveState();
+}
+
+Game::~Game() {
+	delete board;
 }
 
 void Game::nextPlayer()
@@ -40,10 +44,10 @@ void Game::nextTurn()
 
 bool Game::illegalPlacement(int n)
 {
-	Intersection* i = board.tiles[n];
+	shared_ptr<Intersection> i = board->tiles[n];
 	if (i->hasStone)
 		return true;
-	vector<Intersection*> temp = i->captureTest(currentPlayer, noPlayer);
+	vector<shared_ptr<Intersection>> temp = i->captureTest(currentPlayer, noPlayer);
 	vector<int> indexes = getIndexes(temp);
 	bool illegal = isSuperKo(n, indexes) || willSelfCapture(i, indexes);
 	if (!illegal) {
@@ -55,7 +59,7 @@ bool Game::illegalPlacement(int n)
 	return illegal;
 }
 
-bool Game::willSelfCapture(Intersection* i, vector<int> v) {
+bool Game::willSelfCapture(shared_ptr<Intersection> i, vector<int> v) {
 	i->hasStone = true;
 	i->owner = currentPlayer;
 	bool selfCapture = !(i->hasLiberty() || v.size() != 0);
@@ -89,7 +93,7 @@ bool Game::compareState(vector<Color> s1, vector<Color> s2) {
 void Game::placeStone(int n)
 {
 	currentPlayer->passed = false;
-	board.placeStone(n, currentPlayer);
+	board->placeStone(n, currentPlayer);
 }
 
 void Game::captureIntersections(int n)
@@ -103,9 +107,9 @@ void Game::captureIntersections(int n)
 void Game::saveState()
 {
 	vector<Color> currentState;
-	for (int n = 0; n < board.tiles.size(); n++)
+	for (int n = 0; n < board->tiles.size(); n++)
 	{
-		currentState.push_back(board.tiles[n]->owner->color);
+		currentState.push_back(board->tiles[n]->owner->color);
 	}
 	states.push_back(currentState);
 }
@@ -115,17 +119,13 @@ void Game::passTurn() {
 	nextTurn();
 }
 
-void Game::newGame() {
-
-}
-
-vector<int> Game::getIndexes(vector<Intersection*> v) {
+vector<int> Game::getIndexes(vector<shared_ptr<Intersection>> v) {
 	vector<int> indexes;
 	int s;
 	for (int i = 0; i < v.size(); i++)
 	{
-		auto it = find(board.tiles.begin(), board.tiles.end(), v[i]);
-		s = distance(board.tiles.begin(), it);
+		auto it = find(board->tiles.begin(), board->tiles.end(), v[i]);
+		s = distance(board->tiles.begin(), it);
 		indexes.push_back(s);
 	}
 	return indexes;
