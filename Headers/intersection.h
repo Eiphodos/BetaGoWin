@@ -5,27 +5,25 @@
 
 #include "player.h"
 #include <vector>
-#include <memory>
 
 using namespace std;
 
-class Intersection: enable_shared_from_this<Intersection>
+class Intersection
 {
 public:
 	Player* owner;
-	shared_ptr<Intersection> intersectionNorth;
-	shared_ptr<Intersection> intersectionSouth;
-	shared_ptr<Intersection> intersectionWest;
-	shared_ptr<Intersection> intersectionEast;
-	shared_ptr<Intersection> intersectionSelf;
+	Intersection* intersectionNorth;
+	Intersection* intersectionSouth;
+	Intersection* intersectionWest;
+	Intersection* intersectionEast;
 	bool hasStone;
 	bool isChecked;
 	bool hasLiberty();
 	bool hasFriendlyStone(Player* p);
 	bool hasEnemyStone(Player* p);
 	void captureIntersection(Player* noPlayer);
-	vector<shared_ptr<Intersection>> captureTest(Player* p, Player* noPlayer);
-	vector<shared_ptr<Intersection>> capturedConnections();
+	vector<Intersection*> captureTest(Player* p, Player* noPlayer);
+	vector<Intersection*> capturedConnections();
 	Intersection();
 };
 
